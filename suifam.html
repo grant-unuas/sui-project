@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuiFam - Connect with Creators</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
+    <style>
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#3772FF 0.5px, transparent 0.5px);
+            background-size: 10px 10px;
+        }
+        .gradient-bg {
+            background: linear-gradient(to right, #3772FF, #2955B4);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .blue-glow {
+            box-shadow: 0 0 20px rgba(55, 114, 255, 0.2);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+    <script>
+const AllInterests = [
+    { icon: 'fa-basketball-ball', name: 'Sports' },
+    { icon: 'fa-film', name: 'Entertainment' },
+    { icon: 'fa-gamepad', name: 'Gaming' },
+    { icon: 'fa-music', name: 'Music' },
+    { icon: 'fa-palette', name: 'Art' },
+    { icon: 'fa-book', name: 'Books' },
+    { icon: 'fa-camera', name: 'Photography' },
+    { icon: 'fa-utensils', name: 'Food' }
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+    generateInterests();
+    setupEventListeners();
+});
+
+function generateInterests() {
+    const container = document.getElementById('interestsContainer');
+    const shuffled = [...allInterests].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 6);
+    
+    container.innerHTML = selected.map(interest => `
+        <div class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="${interest.name.toLowerCase()}">
+            <i class="fas ${interest.icon} mr-2"></i>${interest.name}
+        </div>
+    `).join('');
+}
+
+function setupEventListeners() {
+    const interests = document.querySelectorAll('[data-interest]');
+    interests.forEach(interest => {
+        interest.addEventListener('click', function() {
+            const selected = document.querySelectorAll('.selected').length;
+            if (!this.classList.contains('selected') && selected >= 3) {
+                Toastify({
+                    text: "Maximum 3 interests allowed",
+                    duration: 2000,
+                    gravity: "top",
+                    position: "center",
+                    style: { background: "#ff3772", borderRadius: "8px" }
+                }).showToast();
+                return;
+            }
+            this.classList.toggle('selected');
+            this.classList.toggle('bg-[#3772FF]');
+            this.classList.toggle('text-white');
+        });
+    });
+
+    document.getElementById('continueBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        const selected = document.querySelectorAll('.selected');
+        
+        if (selected.length < 2) {
+            Toastify({
+                text: "Please select at least 2 interests",
+                duration: 2000,
+                gravity: "top",
+                position: "center",
+                style: { background: "#ff3772", borderRadius: "8px" }
+            }).showToast();
+            return;
+        }
+
+        const interests = Array.from(selected).map(el => el.getAttribute('data-interest'));
+        localStorage.setItem('selectedInterests', JSON.stringify(interests));
+
+        Toastify({
+            text: "Interests saved successfully!",
+            duration: 1500,
+            gravity: "top",
+            position: "center",
+            style: { background: "#3772FF", borderRadius: "8px" }
+        }).showToast();
+
+        const userType = localStorage.getItem('userType');
+        setTimeout(() => {
+            const targetPage = userType === 'fam' ? 'fan.html' : 'creator.html';
+            window.location.assign(targetPage);
+        }, 1600);
+    });
+}
+</script>
+</head>
+
+<body class="bg-pattern min-h-screen">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-5xl w-full flex flex-col md:flex-row gap-8 items-center">
+            <!-- Left Side - Branding -->
+            <div class="md:w-1/2 space-y-8 text-center md:text-left">
+                <div class="animate-float">
+                    <div class="w-32 h-32 gradient-bg rounded-full mx-auto md:mx-0 flex items-center justify-center blue-glow">
+                        <i class="fas fa-gift text-white text-5xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-5xl font-bold bg-gradient-to-r from-[#3772FF] to-[#2955B4] bg-clip-text text-transparent">
+                        SuiFan
+                    </h1>
+                    <p class="text-2xl text-gray-600 mt-4">Support Creators, Build Community</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 max-w-md mx-auto md:mx-0">
+                    <div class="glass-effect p-4 rounded-xl hover-scale">
+                        <i class="fas fa-bolt text-[#3772FF] text-xl mb-2"></i>
+                        <h3 class="font-semibold">Instant Transfer</h3>
+                    </div>
+                    <div class="glass-effect p-4 rounded-xl hover-scale">
+                        <i class="fas fa-shield-alt text-[#3772FF] text-xl mb-2"></i>
+                        <h3 class="font-semibold">Secure Payments</h3>
+                    </div>
+                    <div class="glass-effect p-4 rounded-xl hover-scale">
+                        <i class="fas fa-users text-[#3772FF] text-xl mb-2"></i>
+                        <h3 class="font-semibold">Community First</h3>
+                    </div>
+                    <div class="glass-effect p-4 rounded-xl hover-scale">
+                        <i class="fas fa-globe text-[#3772FF] text-xl mb-2"></i>
+                        <h3 class="font-semibold">Global Reach</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Auth Forms -->
+            <div class="md:w-1/2">
+                <div class="glass-effect p-8 rounded-2xl w-full max-w-md mx-auto">
+                    <!-- Auth Tabs -->
+                    <div class="flex rounded-xl bg-gray-100 p-2 mb-8">
+                        <button id="loginBtn" class="flex-1 py-2 rounded-lg text-center transition-all">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </button>
+                        <button id="signupBtn" class="flex-1 py-2 rounded-lg text-center transition-all">
+                            <i class="fas fa-user-plus mr-2"></i>Sign Up
+                        </button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" class="space-y-6">
+                        <div>
+                            <label class="block text-gray-600 mb-2">
+                                <i class="fas fa-envelope mr-2"></i>Email
+                            </label>
+                            <input type="email" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:border-[#3772FF]" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 mb-2">
+                                <i class="fas fa-lock mr-2"></i>Password
+                            </label>
+                            <div class="relative">
+                                <input type="password" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:border-[#3772FF]" required>
+                                <button type="button" class="absolute right-3 top-3 text-gray-500 toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl hover:opacity-90 transition-all">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </button>
+
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <button type="button" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border hover:bg-gray-50 transition-all hover-scale" onclick="handleSocialLogin('google')">
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                                <span class="text-gray-600">Continue with Google</span>
+                            </button>
+                            <button type="button" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border hover:bg-gray-50 transition-all hover-scale" onclick="handleSocialLogin('facebook')">
+                                <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" class="w-5 h-5" alt="Facebook">
+                                <span class="text-gray-600">Continue with Facebook</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Signup Form -->
+                    <form id="signupForm" class="space-y-6 hidden">
+                        <div>
+                            <label class="block text-gray-600 mb-2">
+                                <i class="fas fa-user mr-2"></i>Full Name
+                            </label>
+                            <input type="text" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:border-[#3772FF]" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 mb-2">
+                                <i class="fas fa-envelope mr-2"></i>Email
+                            </label>
+                            <input type="email" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:border-[#3772FF]" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 mb-2">
+                                <i class="fas fa-lock mr-2"></i>Password
+                            </label>
+                            <div class="relative">
+                                <input type="password" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:border-[#3772FF]" required>
+                                <button type="button" class="absolute right-3 top-3 text-gray-500 toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 mb-2">
+                                <i class="fas fa-phone mr-2"></i>Phone Number
+                            </label>
+                            <input type="tel" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:border-[#3772FF]" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 mb-2">
+                                <i class="fas fa-calendar mr-2"></i>Date of Birth
+                            </label>
+                            <input type="date" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:border-[#3772FF]" required>
+                        </div>
+                        <button type="submit" class="w-full gradient-bg text-white py-3 rounded-xl hover:opacity-90 transition-all">
+                            <i class="fas fa-user-plus mr-2"></i>Sign Up
+                        </button>
+
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <button type="button" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border hover:bg-gray-50 transition-all hover-scale" onclick="handleSocialLogin('google')">
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                                <span class="text-gray-600">Continue with Google</span>
+                            </button>
+                            <button type="button" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border hover:bg-gray-50 transition-all hover-scale" onclick="handleSocialLogin('facebook')">
+                                <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" class="w-5 h-5" alt="Facebook">
+                                <span class="text-gray-600">Continue with Facebook</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Type Modal -->
+    <div id="userTypeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-2xl w-96 max-w-[90%]">
+            <h2 class="text-2xl font-bold mb-6">Choose Your Role</h2>
+            <div class="space-y-4">
+                <button onclick="selectUserType('fam')" class="w-full gradient-bg text-white py-3 rounded-xl hover:opacity-90 transition-all hover-scale">
+                    <i class="fas fa-user mr-2"></i>I'm a Fan
+                </button>
+                <button onclick="selectUserType('creator')" class="w-full gradient-bg text-white py-3 rounded-xl hover:opacity-90 transition-all hover-scale">
+                    <i class="fas fa-star mr-2"></i>I'm a Creator
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interests Modal -->
+<div id="interestsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-2xl w-[32rem] max-w-[90%]">
+        <h2 class="text-2xl font-bold mb-6">Select Your Interests</h2>
+        <p class="text-gray-600 mb-6">Choose 2-3 interests that match your preferences</p>
+
+        <div class="flex flex-wrap gap-3 mb-8">
+            <div onclick="selectInterest(this)" class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="sports">
+                <i class="fas fa-basketball-ball mr-2"></i>Sports
+            </div>
+            <div onclick="selectInterest(this)" class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="entertainment">
+                <i class="fas fa-film mr-2"></i>Entertainment
+            </div>
+            <div onclick="selectInterest(this)" class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="gaming">
+                <i class="fas fa-gamepad mr-2"></i>Gaming
+            </div>
+            <div onclick="selectInterest(this)" class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="music">
+                <i class="fas fa-music mr-2"></i>Music
+            </div>
+            <div onclick="selectInterest(this)" class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="art">
+                <i class="fas fa-palette mr-2"></i>Art
+            </div>
+            <div onclick="selectInterest(this)" class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="photography">
+                <i class="fas fa-camera mr-2"></i>Photography
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <button type="button" id="continueBtn" class="gradient-bg text-white px-6 py-3 rounded-xl hover:opacity-90 flex-1 hover-scale">
+                <i class="fas fa-arrow-right mr-2"></i>Continue
+            </button>
+            <button type="button" onclick="document.getElementById('interestsModal').style.display='none'" class="bg-gray-100 text-gray-600 px-6 py-3 rounded-xl hover:bg-gray-200 flex-1 hover-scale">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+    <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const userTypeModal = document.getElementById('userTypeModal');
+    const interestsModal = document.getElementById('interestsModal');
+    const selectedInterests = new Set();
+
+       // Replace the existing login form handler with this corrected version
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = loginForm.querySelector('input[type="email"]').value;
+    const password = loginForm.querySelector('input[type="password"]').value;
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+        // Make sure we store the full name from the user object
+        const currentUser = {
+            email: user.email,
+            fullName: user.fullName, // This comes from the signup data
+            loginTime: new Date().toISOString()
+        };
+        
+        // Store complete user data
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // Show welcome message with username
+        showToast(`Welcome back, ${user.fullName}! 👋`, 'success');
+
+        // Show user type modal after delay
+        setTimeout(() => {
+            userTypeModal.classList.remove('hidden');
+            userTypeModal.classList.add('flex');
+        }, 2000);
+    } else {
+        showToast('Invalid email or password', 'error');
+    }
+});
+
+// Also update the signup form handler to ensure fullName is properly stored
+signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const userData = {
+        fullName: signupForm.querySelector('input[type="text"]').value.trim(), // Added trim()
+        email: signupForm.querySelector('input[type="email"]').value.trim(),
+        password: signupForm.querySelector('input[type="password"]').value,
+        phone: signupForm.querySelector('input[type="tel"]').value.trim(),
+        dob: signupForm.querySelector('input[type="date"]').value,
+        createdAt: new Date().toISOString()
+    };
+
+    // Validate that fullName is not empty
+    if (!userData.fullName) {
+        showToast('Please enter your full name', 'error');
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (users.some(user => user.email === userData.email)) {
+        showToast('Email already exists', 'error');
+        return;
+    }
+
+    users.push(userData);
+    localStorage.setItem('users', JSON.stringify(users));
+    showToast('Account created successfully! 🎉', 'success');
+    
+    setTimeout(() => {
+        setActiveTab(loginBtn, signupBtn);
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+    }, 1500);
+});
+            
+     
+    // Enhanced signup form handler
+    signupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userData = {
+            fullName: signupForm.querySelector('input[type="text"]').value,
+            email: signupForm.querySelector('input[type="email"]').value,
+            password: signupForm.querySelector('input[type="password"]').value,
+            phone: signupForm.querySelector('input[type="tel"]').value,
+            dob: signupForm.querySelector('input[type="date"]').value,
+            createdAt: new Date().toISOString()
+        };
+
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        if (users.some(user => user.email === userData.email)) {
+            showToast('Email already exists', 'error');
+            return;
+        }
+
+        users.push(userData);
+        localStorage.setItem('users', JSON.stringify(users));
+        showToast('Account created successfully! 🎉', 'success');
+        
+        setTimeout(() => {
+            setActiveTab(loginBtn, signupBtn);
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        }, 1500);
+    });
+
+    // Enhanced toast notification function
+    function showToast(message, type = 'success') {
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            style: {
+                background: type === 'success' 
+                    ? "linear-gradient(135deg, #3772FF 0%, #2955B4 100%)"
+                    : "linear-gradient(135deg, #FF3737 0%, #FF5C5C 100%)",
+                borderRadius: '10px',
+                padding: '1rem 1.5rem',
+                fontSize: '1rem',
+                fontWeight: '500'
+            },
+            className: 'fade-in'
+        }).showToast();
+    }
+
+    // Tab switching helper
+    function setActiveTab(activeBtn, inactiveBtn) {
+        activeBtn.classList.add('gradient-bg', 'text-white');
+        activeBtn.classList.remove('text-gray-600');
+        inactiveBtn.classList.remove('gradient-bg', 'text-white');
+        inactiveBtn.classList.add('text-gray-600');
+    }
+
+    // Social login handler
+    function handleSocialLogin(provider) {
+        showToast(`${provider} login coming soon! 🚀`);
+    }
+function selectUserType(type) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    currentUser.userType = type;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    
+    // Hide user type modal
+    userTypeModal.classList.remove('flex');
+    userTypeModal.classList.add('hidden');
+    
+    showToast(`Selected role: ${type === 'fan' ? 'Fan' : 'Creator'} 🎉`);
+    
+    // Show interests modal
+    interestsModal.classList.remove('hidden');
+    interestsModal.classList.add('flex');
+}
+
+// Update the submitInterests function to handle the redirection
+function submitInterests() {
+    if (selectedInterests.size === 0) {
+        showToast("Please select at least one interest", "error");
+        return;
+    }
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    currentUser.interests = Array.from(selectedInterests);
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    interestsModal.classList.remove('flex');
+    interestsModal.classList.add('hidden');
+    showToast(`Profile setup complete! Welcome to SuiFan 🎊`);
+    
+    // Redirect based on user type after interests are selected
+    setTimeout(() => {
+        if (currentUser.userType === 'fan') {
+            window.location.href = 'fan.html';
+        } else if (currentUser.userType === 'creator') {
+            window.location.href = 'creator.html';
+        }
+    }, 2000);
+}
+
+
+    // User data validation helper
+    function validateUserData() {
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            try {
+                const userData = JSON.parse(currentUser);
+                return userData.fullName ? userData : null;
+            } catch (e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set initial active tab
+        setActiveTab(loginBtn, signupBtn);
+
+        // Password visibility toggle
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('input');
+                const icon = button.querySelector('i');
+                input.type = input.type === 'password' ? 'text' : 'password';
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // Interest selection chips
+        document.querySelectorAll('[data-interest]').forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.classList.toggle('bg-[#3772FF]');
+                chip.classList.toggle('text-white');
+                const interest = chip.dataset.interest;
+                if (selectedInterests.has(interest)) {
+                    selectedInterests.delete(interest);
+                } else {
+                    selectedInterests.add(interest);
+                }
+            });
+        });
+
+        // Tab switching
+        loginBtn.addEventListener('click', () => {
+            setActiveTab(loginBtn, signupBtn);
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        });
+
+        signupBtn.addEventListener('click', () => {
+            setActiveTab(signupBtn, loginBtn);
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        });
+
+        // Check for existing session
+        const currentUser = validateUserData();
+        if (currentUser) {
+            showToast(`Welcome back, ${currentUser.fullName}! 👋`, 'success');
+        }
+    });
+
+
+
+
+
+function selectUserType(type) {
+    const userTypeModal = document.getElementById('userTypeModal');
+    const interestsModal = document.getElementById('interestsModal');
+    userTypeModal.style.display = 'none';
+    interestsModal.style.display = 'flex';
+    localStorage.setItem('userType', type);
+}
+
+// Array of all possible interests
+const allInterests = [
+    { icon: 'fa-basketball-ball', name: 'Sports' },
+    { icon: 'fa-film', name: 'Entertainment' },
+    { icon: 'fa-gamepad', name: 'Gaming' },
+    { icon: 'fa-music', name: 'Music' },
+    { icon: 'fa-palette', name: 'Art' },
+    { icon: 'fa-book', name: 'Books' },
+    { icon: 'fa-camera', name: 'Photography' },
+    { icon: 'fa-utensils', name: 'Food' }
+];
+
+// Function to shuffle array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// Generate random interests HTML
+function generateInterests() {
+    const interestsContainer = document.querySelector('.flex.flex-wrap.gap-3');
+    const shuffledInterests = shuffleArray([...allInterests]);
+    const selectedInterests = shuffledInterests.slice(0, 6);
+
+    interestsContainer.innerHTML = selectedInterests.map(interest => `
+        <div onclick="selectInterest(this)" class="px-4 py-2 rounded-full border-2 border-[#3772FF] text-[#3772FF] cursor-pointer hover:opacity-90 transition-all" data-interest="${interest.name.toLowerCase()}">
+            <i class="fas ${interest.icon} mr-2"></i>${interest.name}
+        </div>
+    `).join('');
+}
+
+function selectUserType(type) {
+    const userTypeModal = document.getElementById('userTypeModal');
+    const interestsModal = document.getElementById('interestsModal');
+    userTypeModal.style.display = 'none';
+    interestsModal.style.display = 'flex';
+    localStorage.setItem('userType', type);
+}
+
+function selectInterest(element) {
+    if (element.classList.contains('bg-[#3772FF]')) {
+        element.classList.remove('bg-[#3772FF]');
+        element.classList.remove('text-white');
+        element.classList.add('text-[#3772FF]');
+    } else {
+        const selectedCount = document.querySelectorAll('.bg-\\[\\#3772FF\\]').length;
+        if (selectedCount >= 3) {
+            Toastify({
+                text: "Maximum 3 interests allowed",
+                duration: 2000,
+                gravity: "top",
+                position: "center",
+                style: { background: "#ff3772", borderRadius: "8px" }
+            }).showToast();
+            return;
+        }
+        element.classList.add('bg-[#3772FF]');
+        element.classList.add('text-white');
+        element.classList.remove('text-[#3772FF]');
+    }
+}
+
+function navigateToUserPage(userType) {
+    if (userType === 'fam') {
+        window.location.href = './fan.html';
+    } else {
+        window.location.href = './creator.html';
+    }
+}
+
+function handleContinue(e) {
+    if (e) e.preventDefault();
+    
+    const selectedInterests = document.querySelectorAll('.bg-\\[\\#3772FF\\]');
+    
+    if (selectedInterests.length < 2) {
+        Toastify({
+            text: "Please select at least 2 interests",
+            duration: 2000,
+            gravity: "top",
+            position: "center",
+            style: { background: "#ff3772", borderRadius: "8px" }
+        }).showToast();
+        return;
+    }
+
+    const interests = Array.from(selectedInterests).map(el => el.getAttribute('data-interest'));
+    localStorage.setItem('selectedInterests', JSON.stringify(interests));
+
+    Toastify({
+        text: "Interests saved successfully!",
+        duration: 1500,
+        gravity: "top",
+        position: "center",
+        style: { background: "#3772FF", borderRadius: "8px" }
+    }).showToast();
+
+    const userType = localStorage.getItem('userType');
+    
+    setTimeout(() => {
+        navigateToUserPage(userType);
+    }, 1600);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const continueBtn = document.getElementById('continueBtn');
+    if (continueBtn) {
+        continueBtn.addEventListener('click', handleContinue);
+    }
+});
+
+</script>
+</body>
+</html>

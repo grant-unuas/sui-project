@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuiFam Wallet - Connect & Manage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8faff 0%, #f0f5ff 100%);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #3772FF 0%, #2955B4 100%);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        .card-shine {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(55, 114, 255, 0.3),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .card-shine:hover::before {
+            left: 100%;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(55, 114, 255, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(55, 114, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(55, 114, 255, 0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+   
+    /* Add these to your existing styles */
+    .table-container {
+        margin-left: 80px;
+        width: calc(100% - 100px);
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+
+    .overflow-x-auto {
+        scrollbar-width: thin;
+        scrollbar-color: #3772FF transparent;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar-thumb {
+        background-color: #3772FF;
+        border-radius: 6px;
+    }
+
+    </style>
+</head>
+<body>
+   
+    <!-- Sidebar -->
+   
+<div id="sidebar" class="fixed w-20 min-h-screen bg-white shadow-lg z-50 flex flex-col items-center py-8 space-y-8">
+
+        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mb-8 hover-scale">
+            <i class="fas fa-gift text-white text-xl"></i>
+        </div>
+        
+        <div class="flex flex-col space-y-4 w-full">
+            <a href="#" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 md:justify-center transition-all">
+                <i class="fas fa-home text-xl"></i>
+                <span class="ml-3 md:hidden">Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 md:justify-center transition-all">
+                <i class="fas fa-users text-xl"></i>
+                <span class="ml-3 md:hidden">Creators</span>
+            </a>
+            <a href="#" class="flex items-center px-6 py-3 text-[#3772FF] bg-[#3772FF]/10 md:justify-center">
+                <i class="fas fa-wallet text-xl"></i>
+                <span class="ml-3 md:hidden">Wallet</span>
+            </a>
+            <a href="#" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 md:justify-center transition-all">
+                <i class="fas fa-chart-line text-xl"></i>
+                <span class="ml-3 md:hidden">Analytics</span>
+            </a>
+            <a href="#" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 md:justify-center transition-all">
+                <i class="fas fa-cog text-xl"></i>
+                <span class="ml-3 md:hidden">Settings</span>
+            </a>
+        </div>
+    </div>
+
+
+
+    <!-- Main Content -->
+    <div class="md:ml-20 p-4 md:p-8">
+        <!-- Header Section -->
+        <div class="flex flex-col gap-6 mb-8">
+            <!-- Title and Connect Wallet Row -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">fan-Dashboard</h1>
+                    <p class="text-gray-600">Manage your SUI tokens and transactions</p>
+                </div>
+
+<!-- User Profile Section -->
+<div class="flex items-center space-x-3 bg-gray-50 px-4 py-2 rounded-xl">
+    <img src="https://randomuser.me/api/portraits/men/1.jpg" class="w-8 h-8 rounded-full">
+    <span id="userFullName" class="font-medium text-gray-700 hidden md:block">
+        <!-- Fan name will be inserted here -->
+    </span>
+    <i class="fas fa-chevron-down text-gray-400 hidden md:block"></i>
+</div>
+<!-- Add the Switch to Creator button here -->
+<div class="flex items-center space-x-4 mt-4 md:mt-0">
+    <button onclick="switchToCreator()" class="px-4 py-2 gradient-bg text-white rounded-lg">
+        Switch to Creator View
+    </button>
+</div>
+
+
+                <button id="connectWallet" class="gradient-bg text-white px-6 py-3 rounded-xl hover:opacity-90 transition-all pulse mt-4 md:mt-0">
+                    <i class="fas fa-plug mr-2"></i>Connect Wallet
+                </button>
+            </div>
+
+            <!-- Toggle Buttons Row -->
+            <div class="flex overflow-x-auto">
+                <button class="px-6 py-3 text-[#3772FF] border-b-2 border-[#3772FF] font-medium whitespace-nowrap">
+                    <i class="fas fa-wallet mr-2"></i>Overview
+                </button>
+                <button class="px-6 py-3 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    <i class="fas fa-history mr-2"></i>History
+                </button>
+                <button class="px-6 py-3 text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    <i class="fas fa-cog mr-2"></i>Settings
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Balance Card -->
+        <div class="gradient-bg rounded-2xl p-8 mb-8 text-white slide-up hover-scale">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Total Balance</h2>
+                    <p class="text-4xl font-bold">1,234.56 SUI</p>
+                </div>
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-wallet text-2xl"></i>
+                </div>
+            </div>
+            <div class="flex items-center mt-4">
+                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
+                    <i class="fas fa-arrow-up mr-1"></i>+12.5%
+                </span>
+                <span class="ml-4 text-sm opacity-80">Last 30 days</span>
+            </div>
+        </div>
+
+        <!-- Balance Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Available Balance -->
+            <div class="glass-effect rounded-xl p-6 hover-scale card-shine">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-500">Available Balance</h3>
+                    <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                        <i class="fas fa-coins text-white text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">956.32 SUI</p>
+                <p class="text-[#3772FF] text-sm mt-2">Available for transactions</p>
+            </div>
+
+            <!-- Locked Balance -->
+            <div class="glass-effect rounded-xl p-6 hover-scale card-shine">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-500">Locked Balance</h3>
+                    <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                        <i class="fas fa-lock text-white text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">278.24 SUI</p>
+                <p class="text-gray-500 text-sm mt-2">Locked in active gifts</p>
+            </div>
+
+            <!-- Pending Balance -->
+            <div class="glass-effect rounded-xl p-6 hover-scale card-shine">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-500">Pending</h3>
+                    <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                        <i class="fas fa-clock text-white text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">0.00 SUI</p>
+                <p class="text-gray-500 text-sm mt-2">Pending transactions</p>
+            </div>
+        </div>
+
+       
+
+                <!-- Find this section in your code: Quick Actions -->
+<div class="glass-effect rounded-xl p-6 mb-8 slide-up">
+    <h2 class="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Send button (existing) -->
+        <button onclick="toggleModal('sendModal')" 
+                class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 transition-all hover-scale">
+            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mb-2">
+                <i class="fas fa-paper-plane text-white text-xl"></i>
+            </div>
+            <span class="text-gray-700">Send</span>
+        </button>
+
+        <!-- Receive button (existing) -->
+        <button onclick="toggleModal('receiveModal')" 
+                class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 transition-all hover-scale">
+            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mb-2">
+                <i class="fas fa-download text-white text-xl"></i>
+            </div>
+            <span class="text-gray-700">Receive</span>
+        </button>
+
+        <!-- Replace the existing Swap button with this -->
+        <button onclick="toggleModal('swapModal')" 
+                class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 transition-all hover-scale">
+            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mb-2">
+                <i class="fas fa-exchange-alt text-white text-xl"></i>
+            </div>
+            <span class="text-gray-700">Swap</span>
+        </button>
+
+        <!-- Replace the existing Gift button with this -->
+        <button onclick="toggleModal('giftModal')" 
+                class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 transition-all hover-scale">
+            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mb-2">
+                <i class="fas fa-gift text-white text-xl"></i>
+            </div>
+            <span class="text-gray-700">Gift</span>
+        </button>
+    </div>
+</div>
+        </div>
+
+       <!-- Recent Transactions -->
+<div class="glass-effect rounded-xl overflow-hidden slide-up" style="margin-left: 80px; width: calc(100% - 100px);">
+    <div class="p-6 border-b border-gray-100">
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">Recent Transactions</h2>
+            <a href="#" class="text-[#3772FF] hover:text-[#2955B4] flex items-center">
+                View All <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="text-left py-4 px-6 text-gray-500 font-medium">Type</th>
+                    <th class="text-left py-4 px-6 text-gray-500 font-medium">Amount</th>
+                    <th class="text-left py-4 px-6 text-gray-500 font-medium">To/From</th>
+                    <th class="text-left py-4 px-6 text-gray-500 font-medium">Date</th>
+                    <th class="text-left py-4 px-6 text-gray-500 font-medium">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t border-gray-100 hover:bg-gray-50">
+                    <td class="py-4 px-6">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full gradient-bg flex items-center justify-center mr-3">
+                                <i class="fas fa-gift text-white text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">Gift Sent</span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6 text-red-500">-50 SUI</td>
+                    <td class="py-4 px-6">
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/women/1.jpg" class="w-8 h-8 rounded-full mr-3">
+                            <span class="text-gray-800">Sarah Connor</span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6 text-gray-500">2 minutes ago</td>
+                    <td class="py-4 px-6">
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">
+                            Completed
+                        </span>
+                    </td>
+                </tr>
+                <!-- Add more transaction rows as needed -->
+            </tbody>
+        </table>
+    </div>
+</div>
+                   
+                     
+    <!-- Send Modal -->
+    <div id="sendModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-md w-full p-8 slide-up">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 gradient-bg rounded-full mx-auto flex items-center justify-center mb-4">
+                        <i class="fas fa-paper-plane text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Send SUI</h2>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">Recipient Address</label>
+                    <input type="text" 
+                           class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#3772FF] transition-colors"
+                           placeholder="Enter SUI address">
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">Amount</label>
+                    <div class="relative">
+                        <input type="number" 
+                               class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#3772FF] transition-colors"
+                               placeholder="0.00">
+                        <span class="absolute right-4 top-3 text-gray-500">SUI</span>
+                    </div>
+                </div>
+                
+                
+       <!-- Replace the existing button section in the Send Modal with this -->
+<div class="flex space-x-4">
+    <button onclick="sendSui()" 
+            class="gradient-bg text-white px-6 py-3 rounded-xl hover:opacity-90 flex-1 hover-scale">
+        Send Now
+    </button>
+    <button onclick="toggleModal('sendModal')" 
+            class="bg-gray-100 text-gray-600 px-6 py-3 rounded-xl hover:bg-gray-200 flex-1 hover-scale">
+        Cancel
+    </button>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receive Modal -->
+    <div id="receiveModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-md w-full p-8 slide-up">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 gradient-bg rounded-full mx-auto flex items-center justify-center mb-4">
+                        <i class="fas fa-qrcode text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Receive SUI</h2>
+                </div>
+                
+                <div class="mb-6 text-center">
+                    <div class="bg-gray-100 p-4 rounded-xl mb-4">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=example" 
+                             alt="QR Code" 
+                             class="mx-auto">
+                    </div>
+                    <p class="text-gray-600 mb-2">Your SUI Address</p>
+                    <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                        <code class="text-sm text-gray-800">0x1234...5678</code>
+                        <button onclick="copyAddress()" class="text-[#3772FF] hover:text-[#2955B4]">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button onclick="toggleModal('receiveModal')" 
+                        class="w-full bg-gray-100 text-gray-600 px-6 py-3 rounded-xl hover:bg-gray-200 hover-scale">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Gift Modal -->
+<div id="giftModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-8 slide-up">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 gradient-bg rounded-full mx-auto flex items-center justify-center mb-4">
+                    <i class="fas fa-gift text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Gift SUI to Fan</h2>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2">Fan Username</label>
+                <input type="text" 
+                       id="fanUsername"
+                       class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#3772FF] transition-colors"
+                       placeholder="Enter fan username">
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2">Amount</label>
+                <div class="relative">
+                    <input type="number" 
+                           id="giftAmount"
+                           class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#3772FF] transition-colors"
+                           placeholder="0.00">
+                    <span class="absolute right-4 top-3 text-gray-500">SUI</span>
+                </div>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button onclick="sendGift()" 
+                        class="gradient-bg text-white px-6 py-3 rounded-xl hover:opacity-90 flex-1 hover-scale">
+                    Send Gift
+                </button>
+                <button onclick="toggleModal('giftModal')" 
+                        class="bg-gray-100 text-gray-600 px-6 py-3 rounded-xl hover:bg-gray-200 flex-1 hover-scale">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Swap Modal -->
+<div id="swapModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-8 slide-up">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 gradient-bg rounded-full mx-auto flex items-center justify-center mb-4">
+                    <i class="fas fa-exchange-alt text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Swap Tokens</h2>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2">From</label>
+                <div class="relative">
+                    <input type="number" 
+                           id="swapFromAmount"
+                           class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#3772FF] transition-colors"
+                           placeholder="0.00">
+                    <select id="fromToken" class="absolute right-4 top-3 bg-transparent text-gray-500">
+                        <option value="SUI">SUI</option>
+                        <option value="ETH">ETH</option>
+                        <option value="BTC">BTC</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex justify-center mb-6">
+                <button onclick="switchTokens()" class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center hover:opacity-90">
+                    <i class="fas fa-arrow-down text-white"></i>
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2">To</label>
+                <div class="relative">
+                    <input type="number" 
+                           id="swapToAmount"
+                           class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-[#3772FF] transition-colors"
+                           placeholder="0.00">
+                    <select id="toToken" class="absolute right-4 top-3 bg-transparent text-gray-500">
+                        <option value="ETH">ETH</option>
+                        <option value="SUI">SUI</option>
+                        <option value="BTC">BTC</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button onclick="performSwap()" 
+                        class="gradient-bg text-white px-6 py-3 rounded-xl hover:opacity-90 flex-1 hover-scale">
+                    Swap Now
+                </button>
+                <button onclick="toggleModal('swapModal')" 
+                        class="bg-gray-100 text-gray-600 px-6 py-3 rounded-xl hover:bg-gray-200 flex-1 hover-scale">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1000,
+        once: true
+    });
+</script>
+
+
+    <script>
+        // Add this in the <script> section of w.html
+function getCurrentUserName() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+    return currentUser.fullName || 'Fan Name';
+}
+
+function switchToCreator() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    currentUser.userType = 'creator';
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    window.location.href = 'creator.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Update user name in navigation
+    const userFullName = document.getElementById('userFullName');
+    if (userFullName) {
+        userFullName.textContent = getCurrentUserName();
+    }
+
+    // Check if user is actually a fan
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+    if (currentUser.userType !== 'fam') {
+        window.location.href = 'fan.html';
+    }
+});
+    // Global variables
+    let suiBalance = 1234.56; // Initial balance
+
+    // Modal functionality
+    function toggleModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            if (modal.classList.contains('hidden')) {
+                // Hide all other modals first
+                const allModals = document.querySelectorAll('[id$="Modal"]');
+                allModals.forEach(m => m.classList.add('hidden'));
+                // Show this modal
+                modal.classList.remove('hidden');
+            } else {
+                // Hide this modal
+                modal.classList.add('hidden');
+                // Clear inputs when closing
+                clearModalInputs(modalId);
+            }
+        }
+    }
+
+    // Clear modal inputs when closing
+    function clearModalInputs(modalId) {
+        switch(modalId) {
+            case 'sendModal':
+                const sendAmount = document.querySelector('#sendModal input[type="number"]');
+                const sendAddress = document.querySelector('#sendModal input[type="text"]');
+                if (sendAmount) sendAmount.value = '';
+                if (sendAddress) sendAddress.value = '';
+                break;
+            case 'giftModal':
+                const fanUsername = document.getElementById('fanUsername');
+                const giftAmount = document.getElementById('giftAmount');
+                if (fanUsername) fanUsername.value = '';
+                if (giftAmount) giftAmount.value = '';
+                break;
+            case 'swapModal':
+                const fromAmount = document.getElementById('swapFromAmount');
+                const toAmount = document.getElementById('swapToAmount');
+                if (fromAmount) fromAmount.value = '';
+                if (toAmount) toAmount.value = '';
+                break;
+        }
+    }
+
+    // Send SUI functionality
+    function sendSui() {
+        const amountInput = document.querySelector('#sendModal input[type="number"]');
+        const amount = parseFloat(amountInput.value);
+        
+        if (isNaN(amount) || amount <= 0) {
+            showNotification('Please enter a valid amount', 'error');
+            return;
+        }
+        
+        if (amount > suiBalance) {
+            showNotification('Insufficient balance', 'error');
+            return;
+        }
+        
+        updateSuiBalance(suiBalance - amount);
+        showNotification(`Successfully sent ${amount} SUI`);
+        toggleModal('sendModal');
+        addRecentTransaction('Send', amount, 'Recipient');
+    }
+
+    // Gift functionality
+    function sendGift() {
+        const username = document.getElementById('fanUsername').value;
+        const amount = parseFloat(document.getElementById('giftAmount').value);
+        
+        if (!username) {
+            showNotification('Please enter a username', 'error');
+            return;
+        }
+        
+        if (isNaN(amount) || amount <= 0) {
+            showNotification('Please enter a valid amount', 'error');
+            return;
+        }
+        
+        if (amount > suiBalance) {
+            showNotification('Insufficient balance', 'error');
+            return;
+        }
+        
+        updateSuiBalance(suiBalance - amount);
+        showNotification(`Successfully gifted ${amount} SUI to ${username}`);
+        toggleModal('giftModal');
+        addRecentTransaction('Gift Sent', amount, username);
+    }
+
+    // Swap functionality
+    function switchTokens() {
+        const fromToken = document.getElementById('fromToken');
+        const toToken = document.getElementById('toToken');
+        const fromAmount = document.getElementById('swapFromAmount');
+        const toAmount = document.getElementById('swapToAmount');
+        
+        [fromToken.value, toToken.value] = [toToken.value, fromToken.value];
+        [fromAmount.value, toAmount.value] = [toAmount.value, fromAmount.value];
+    }
+
+    function performSwap() {
+        const fromAmount = parseFloat(document.getElementById('swapFromAmount').value);
+        const fromToken = document.getElementById('fromToken').value;
+        const toToken = document.getElementById('toToken').value;
+        
+        if (isNaN(fromAmount) || fromAmount <= 0) {
+            showNotification('Please enter a valid amount', 'error');
+            return;
+        }
+        
+        if (fromToken === toToken) {
+            showNotification('Cannot swap same tokens', 'error');
+            return;
+        }
+        
+        if (fromToken === 'SUI' && fromAmount > suiBalance) {
+            showNotification('Insufficient SUI balance', 'error');
+            return;
+        }
+        
+        if (fromToken === 'SUI') {
+            updateSuiBalance(suiBalance - fromAmount);
+        } else if (toToken === 'SUI') {
+            updateSuiBalance(suiBalance + (fromAmount * 0.95));
+        }
+        
+        showNotification(`Successfully swapped ${fromAmount} ${fromToken} to ${toToken}`);
+        toggleModal('swapModal');
+        addRecentTransaction('Swap', fromAmount, `${fromToken} to ${toToken}`);
+    }
+
+    // Helper Functions
+    function updateSuiBalance(newBalance) {
+        suiBalance = newBalance;
+        document.querySelector('.text-4xl.font-bold').textContent = `${suiBalance.toFixed(2)} SUI`;
+        document.querySelector('.glass-effect .text-3xl.font-bold').textContent = 
+            `${(suiBalance * 0.8).toFixed(2)} SUI`;
+    }
+
+    function showNotification(message, type = 'success') {
+        const existingNotifications = document.querySelectorAll('.notification-toast');
+        existingNotifications.forEach(notification => notification.remove());
+
+        const notification = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-[#3772FF]';
+        notification.className = 
+            `notification-toast fixed bottom-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg slide-up z-50`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    function addRecentTransaction(type, amount, recipient) {
+        const tbody = document.querySelector('tbody');
+        const tr = document.createElement('tr');
+        tr.className = 'border-t border-gray-100 hover:bg-gray-50';
+        
+        const icon = type === 'Gift Sent' ? 'fa-gift' : 
+                    type === 'Send' ? 'fa-paper-plane' : 
+                    'fa-exchange-alt';
+        
+        tr.innerHTML = `
+            <td class="py-4 px-6">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full gradient-bg flex items-center justify-center mr-3">
+                        <i class="fas ${icon} text-white text-sm"></i>
+                    </div>
+                    <span class="font-medium text-gray-800">${type}</span>
+                </div>
+            </td>
+            <td class="py-4 px-6 text-red-500">-${amount} SUI</td>
+            <td class="py-4 px-6">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/1.jpg" class="w-8 h-8 rounded-full mr-3">
+                    <span class="text-gray-800">${recipient}</span>
+                </div>
+            </td>
+            <td class="py-4 px-6 text-gray-500">Just now</td>
+            <td class="py-4 px-6">
+                <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">
+                    Completed
+                </span>
+            </td>
+        `;
+        
+        tbody.insertBefore(tr, tbody.firstChild);
+    }
+
+    // Copy address functionality
+    function copyAddress() {
+        const address = '0x1234...5678';
+        navigator.clipboard.writeText(address).then(() => {
+            showNotification('Address copied to clipboard!');
+        });
+    }
+
+ // Place this before </body> tag, after AOS.init()
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal controls
+    function toggleModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.toggle('hidden');
+        }
+    }
+
+    // Handle token swap
+    function switchTokens() {
+        const fromAmount = document.getElementById('swapFromAmount');
+        const fromToken = document.getElementById('fromToken');
+        const toAmount = document.getElementById('swapToAmount');
+        const toToken = document.getElementById('toToken');
+
+        if (fromAmount && fromToken && toAmount && toToken) {
+            // Swap values
+            const tempAmount = fromAmount.value;
+            const tempToken = fromToken.value;
+            
+            fromAmount.value = toAmount.value;
+            fromToken.value = toToken.value;
+            toAmount.value = tempAmount;
+            toToken.value = tempToken;
+        }
+    }
+
+    // Handle interest selection
+    function selectInterest(element) {
+        element.classList.toggle('bg-[#3772FF]');
+        element.classList.toggle('text-white');
+    }
+
+    // Prevent default form submissions
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add your form handling logic here
+        });
+    });
+
+    // Prevent navigation refreshes
+    const navigationButtons = document.querySelectorAll('a[href]');
+    navigationButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Add your navigation logic here
+        });
+    });
+
+    // Make functions globally available
+    window.toggleModal = toggleModal;
+    window.switchTokens = switchTokens;
+    window.selectInterest = selectInterest;
+});
+    
+</script>
+</body>
+</html>
